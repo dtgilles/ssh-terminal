@@ -1,0 +1,8 @@
+#!/bin/bash
+##### global variable:
+##### LoginSleep	time to sleep, executing this scipt...
+##### 			default=3600
+[ -f /etc/default/LoginSleep ] && source /etc/default/LoginSleep
+
+sleep "${LoginSleep:-3600}"
+exit $?
