@@ -4,9 +4,11 @@
 ##### UserDir  (default is /etc/user)
 ##### HomeBase (default is /home)
 ##### HostKeys (default is /etc/ssh, -- if there are no keys, they will be generated)
-##### IpTables (default is empty, therefore no iptables script is called)
 ##### LoginSleep        time to sleep, executing login shell "LoginSleep"
 #####                   default=3600
+##### SSHD_OPTS         here you can define additional options for ssh daemon
+##### LOGFILE           defines absolute path of logfile (realized by sshd option -E)
+#####                   if not set (default) regarding sshd option is "-e"
 #
 #  $UserDir could be external mounted directory
 #  using this dir you can simply define the users
@@ -24,6 +26,13 @@ HostKeys="${HostKeys:-/etc/ssh}"
 LoginSleep="${LoginSleep:-3600}"
 
 echo "LoginSleep=$LoginSleep" >/etc/default/LoginSleep
+if [ -z "$LOGFILE" ]				##### if variable is not set
+   then
+      SSHD_OPTS="-e ${SSHD_OPTS}"		##### then log to `docker logs`
+   else
+      SSHD_OPTS="-E ${LOGFILE} ${SSHD_OPTS}"	##### else use the given Logfile
+      mkdir -p "${LOGFILE%/*}"			##### and create needed log directory
+   fi
 
 case "$1"
    in

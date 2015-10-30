@@ -11,7 +11,10 @@ Running this docker container you may support following use cases:
    - mount /etc/user via external volume
    - set login shell to "/usr/local/bin/LoginSleep" for each user
    - write users firewall restrictions into users key file -- see 
-	sshd_config man page to get more information about PermitOpen="ip:port"
+	sshd_config man page to get more information about
+          o PermitOpen="ip:port"
+          o no-pty
+          o ...
    - set global variable "LoginSleep" to configure session timeout
  * run a "classic hopping station"
    - mount /data via external volume
@@ -29,6 +32,7 @@ Running this docker container you may support following use cases:
 
 Important for all cases:
 
+* use variable SSHD_OPTS to change specific options
 * Startup takes more time the more users have to be created.
 * Startup time prolongs (and security is reduced) if ssh host key is not persistent -- so $HostKey is strongly recommended.
 * If you use persistent user homes it is strongly recommended to set their uids.
