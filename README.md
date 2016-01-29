@@ -42,6 +42,7 @@ Important for all cases:
 
 You can control containers behaviour using following environment variables:
 
+* RootKey:	this key will be distributed to root
 * UserDir:	this directory describes the user to create at startup time
 		and their properties (see below) -- default is /etc/user
 * HomeBase:	is the home directory for the created users -- default is /home
@@ -49,6 +50,12 @@ You can control containers behaviour using following environment variables:
 		persistent) -- default is /etc/ssh
 * LoginSleep:	if login shell /usr/local/bin/LoginSleep is used for some users
 		this variable sets the global session timeout -- default is 1 hour
+* SleepyTask:	there is one task that I could run for you (after sleepng X seconds)
+		-- regularly:  e.g. >>60  /root/bin/sync_config.sh<<
+		waits 60 seconds and starts a config synchronization script,
+		waits 60 seconds and starts a config synchronization script,
+		waits 60 seconds and starts a config synchronization script,
+		...
 
 $UserDir is used to define the users that have to be accessible via ssh and 
 their parameters - each of that in a separate file:

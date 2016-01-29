@@ -7,6 +7,7 @@
 ##### LoginSleep        time to sleep, executing login shell "LoginSleep"
 #####                   default=3600
 ##### SSHD_OPTS         here you can define additional options for ssh daemon
+##### RootKey           here you can define one initial root key
 ##### LOGFILE           defines absolute path of logfile (realized by sshd option -E)
 #####                   if not set (default) regarding sshd option is "-e"
 #
@@ -26,12 +27,29 @@ HostKeys="${HostKeys:-/etc/ssh}"
 LoginSleep="${LoginSleep:-3600}"
 
 echo "LoginSleep=$LoginSleep" >/etc/default/LoginSleep
+if [ "$RootKey" != "" ]
+   then
+      mkdir -p              /root/.ssh
+      (echo "$RootKey"; cat /root/.ssh/authorized_keys 2>/dev/null) | sort -u > /tmp/root.key || exit 2
+      cat /tmp/root.key   > /root/.ssh/authorized_keys             && rm   -f   /tmp/root.key
+   fi
 if [ -z "$LOGFILE" ]				##### if variable is not set
    then
       SSHD_OPTS="-e ${SSHD_OPTS}"		##### then log to `docker logs`
    else
       SSHD_OPTS="-E ${LOGFILE} ${SSHD_OPTS}"	##### else use the given Logfile
       mkdir -p "${LOGFILE%/*}"			##### and create needed log directory
+   fi
+if [ "${SleepyTask}" != "" ]
+   then
+      (
+         read sec task <<< "$SleepyTask"
+         [ "${sec#*[^0-9]}" = "$sec" ] || exit 4 ##### sec must be the time to sleep (in seconds)
+         while sleep "$sec"                      ##### this is an endless loop:
+             do                                  #####  - sleep a while...
+                eval "$task"                     #####  - ...and execute a single task
+             done
+      ) &
    fi
 
 case "$1"
@@ -89,6 +107,7 @@ if [ -f "$IpTables" ] && [ -x "$IpTables" ]
       "$IpTables" start &
    fi
 
-[ -f /etc/defaults/ssh ] && source /etc/defaults/ssh
+[ -f /etc/default/ssh  ] && source /etc/default/ssh
+[ -f /etc/defaults/ssh ] && source /etc/defaults/ssh   ##### for compatibility purposes
 ##### final destination
 exec /usr/sbin/sshd -D ${SSHD_OPTS}
