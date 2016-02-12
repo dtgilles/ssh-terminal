@@ -107,7 +107,9 @@ if [ -f "$IpTables" ] && [ -x "$IpTables" ]
       "$IpTables" start &
    fi
 
-[ -f /etc/default/ssh  ] && source /etc/default/ssh
-[ -f /etc/defaults/ssh ] && source /etc/defaults/ssh   ##### for compatibility purposes
+for file in /entry.add.*                       ##### perhaps it could make sence to source
+   do                                          ##### *.sh or simply execute all other files
+      [ -f "$file" ] && source "$file"         ##### -- later perhaps
+   done                                        ##### let me know, write me a ticket!
 ##### final destination
 exec /usr/sbin/sshd -D ${SSHD_OPTS}

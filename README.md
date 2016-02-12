@@ -67,3 +67,15 @@ their parameters - each of that in a separate file:
 Only the file "key" is (obviously) mandatory, uid and shell are optional.
 
 
+## For Developers
+
+...who like to extend this docker image, you may create files named
+
+     /entry.add.*.sh
+
+These files are sourced during startup right before starting sshd. It
+is convenient to enforce correct start order name the scripts like 
+
+     /entry.add.01-first-script.sh
+     /entry.add.02-another-script.sh
+
