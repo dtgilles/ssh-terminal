@@ -29,6 +29,8 @@ LoginSleep="${LoginSleep:-3600}"
 echo "LoginSleep=$LoginSleep" >/etc/default/LoginSleep
 if [ "$RootKey" != "" ]
    then
+      usermod -aG ssh root
+      sed -ie 's/^PermitRootLogin.*/PermitRootLogin without-password/' /etc/ssh/sshd_config
       mkdir -p              /root/.ssh
       (echo "$RootKey"; cat /root/.ssh/authorized_keys 2>/dev/null) | sort -u > /tmp/root.key || exit 2
       cat /tmp/root.key   > /root/.ssh/authorized_keys             && rm   -f   /tmp/root.key
