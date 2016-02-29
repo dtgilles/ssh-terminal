@@ -65,7 +65,8 @@ case "$1"
 hostkeys=`ls "${HostKeys}"/*_key 2>/dev/null`
 if [ "${#hostkeys}" = 0 ]
    then
-      dpkg-reconfigure -f noninteractive openssh-server
+      dpkg-reconfigure -f noninteractive openssh-server   ##### create host keys if they do not exist
+      mkdir -p "${HostKeys}"                              ##### create host key dir if it doesn't exist
       if [ "${HostKeys}" != /etc/ssh ]
          then
             cp -p /etc/ssh/*_key     "${HostKeys}/."
