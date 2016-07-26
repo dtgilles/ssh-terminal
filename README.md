@@ -64,8 +64,20 @@ their parameters - each of that in a separate file:
     "$UserDir/<user>/uid"		# uid of the user (only a number)
     "$UserDir/<user>/shell"		# name of the login shell (has to exist)
 
-Only the file "key" is (obviously) mandatory, uid and shell are optional.
+The files uid and shell are optional while key file could be substituted by a directory
+"key_build" with possibly more than one key inside an a prefix definition for each key:
 
+    "$UserDir/<user>/key_build/"
+    "$UserDir/<user>/key_build/subuser1.pub"	# key file (in openssh format)
+    "$UserDir/<user>/key_build/subuser2.pub"	# key file (in openssh format)
+    "$UserDir/<user>/key_build/_keyprefix"	# prefix for each key (see below)
+    "$UserDir/<user>/uid"		# uid of the user (only a number)
+    "$UserDir/<user>/shell"		# name of the login shell (has to exist)
+
+If "_keyprefix" has a %u inside it will be substituted by name of the subuser, e.g.
+"_keyprefix" could look like 'nopty,command="/usr/local/bin/show_app_permissions %u"'.
+So if if either "subuser1" or "subuser2" login via ssh they will see their own
+permissions, because of the personalized forced command.
 
 ## For Developers
 

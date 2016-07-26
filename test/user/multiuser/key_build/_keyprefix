@@ -1,0 +1,1 @@
+no-pty,command="/bin/echo user %u OK"
