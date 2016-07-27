@@ -82,7 +82,7 @@ The files uid and shell are optional while key file could be substituted by a di
 If "_keyprefix" has a %u inside it will be substituted by name of the subuser, e.g.
 "_keyprefix" could look like ```nopty,command="/path/to/api.script %u"```.
 So if if "subuser1" login via ssh he will call ```api.script``` which gets ```subuser1```
-as command line parameter and so could (for instance) show callers permissions.
+as command line parameter and so could (for instance) show callers permissions. (Keep in mind: command line parameter of the api caller are stored by ssh in variable ```$SSH_ORIGINAL_COMMAND```.
 
 ## For Developers
 
