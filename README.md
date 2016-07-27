@@ -12,10 +12,15 @@ Running this docker container you may support following use cases:
    - set login shell to "/usr/local/bin/LoginSleep" for each user
    - write users firewall restrictions into users key file -- see 
 	sshd_config man page to get more information about
-          o PermitOpen="ip:port"
-          o no-pty
-          o ...
+          - PermitOpen="ip:port"
+          - no-pty
+          - ...
    - set global variable "LoginSleep" to configure session timeout
+   - set global variable ```SSHD_OPTS="-o AllowTcpForwarding=yes"``` (other options could be appended)
+ * special api host
+   - create your own api command (e.g. shell or python script)
+   - mount /etc/user via external volume and set this api command as login shell
+   - more than one key per user are supported -- see below
  * run a "classic hopping station"
    - mount /data via external volume
    - set $HostKeys to     "/data/host-keys"
@@ -75,9 +80,9 @@ The files uid and shell are optional while key file could be substituted by a di
     "$UserDir/<user>/shell"		# name of the login shell (has to exist)
 
 If "_keyprefix" has a %u inside it will be substituted by name of the subuser, e.g.
-"_keyprefix" could look like 'nopty,command="/usr/local/bin/show_app_permissions %u"'.
-So if if either "subuser1" or "subuser2" login via ssh they will see their own
-permissions, because of the personalized forced command.
+"_keyprefix" could look like ```nopty,command="/path/to/api.script %u"```.
+So if if "subuser1" login via ssh he will call ```api.script``` which gets ```subuser1```
+as command line parameter and so could (for instance) show callers permissions.
 
 ## For Developers
 
