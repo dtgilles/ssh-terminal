@@ -134,6 +134,12 @@ if [ -d "$UserDir" ]
             cp "$keyfile" "$HomeBase/$u/.ssh/authorized_keys"
             chmod 755     "$HomeBase/$u/.ssh"
             chmod 644     "$HomeBase/$u/.ssh/authorized_keys"
+            if [ - d "$UserDir/$u/"priv ]
+               then
+                  cp "$UserDir/$u/"priv/id_* "$HomeBase/$u/.ssh"
+                  chmod 600                  "$HomeBase/$u/.ssh/"id_*
+                  chown "$u"                 "$HomeBase/$u/.ssh/"id_*
+               fi
          done
       rm -f /tmp/key.$$.*
    fi

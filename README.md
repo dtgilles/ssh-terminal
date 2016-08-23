@@ -68,9 +68,10 @@ their parameters - each of that in a separate file:
     "$UserDir/<user>/key"		# key file (in openssh format)
     "$UserDir/<user>/uid"		# uid of the user (only a number)
     "$UserDir/<user>/shell"		# name of the login shell (has to exist)
+    "$UserDir/<user>/priv/"		# directory containing private keys (ssh transfers or syncs)
 
-The files uid and shell are optional while key file could be substituted by a directory
-"key_build" with possibly more than one key inside an a prefix definition for each key:
+The uid, priv/ and shell are optional while mandatory key file could be substituted by a directory
+"key_build" with possibly more than one key inside and a prefix definition for all keys:
 
     "$UserDir/<user>/key_build/"
     "$UserDir/<user>/key_build/subuser1.pub"	# key file (in openssh format)
@@ -78,11 +79,12 @@ The files uid and shell are optional while key file could be substituted by a di
     "$UserDir/<user>/key_build/_keyprefix"	# prefix for each key (see below)
     "$UserDir/<user>/uid"		# uid of the user (only a number)
     "$UserDir/<user>/shell"		# name of the login shell (has to exist)
+    "$UserDir/<user>/priv/"		# directory containing private keys (ssh transfers or syncs)
 
 If "_keyprefix" has a %u inside it will be substituted by name of the subuser, e.g.
-"_keyprefix" could look like ```nopty,command="/path/to/api.script %u"```.
-So if if "subuser1" login via ssh he will call ```api.script``` which gets ```subuser1```
-as command line parameter and so could (for instance) show callers permissions. (Keep in mind: command line parameter of the api caller are stored by ssh in variable ```$SSH_ORIGINAL_COMMAND```.
+"_keyprefix" could look like ```nopty,PermitOpen="ip:port",command="/path/to/api.script %u"```.
+So if "subuser1" login via ssh he will call ```api.script``` which gets ```subuser1```
+as command line parameter and so could (for instance) show callers permissions.
 
 ## For Developers
 
@@ -95,4 +97,10 @@ is convenient to enforce correct start order name the scripts like
 
      /entry.add.01-first-script.sh
      /entry.add.02-another-script.sh
+
+...who like to write login scripts using above mentioned "subuser" feature / command clause with %u - keep
+in mind:
+
+* command line parameter of the api caller are stored by ssh in variable ```$SSH_ORIGINAL_COMMAND```
+* without command clause in authorized_keys arguments are stored in ```$*``` as usual
 
