@@ -13,7 +13,7 @@ RUN    mkdir /var/run/sshd \
 
 COPY sshd_config /etc/ssh/sshd_config
 COPY entry.sh    /entry.sh
-COPY LoginSleep  /usr/local/bin/LoginSleep
+COPY LoginSleep  add_user_keys.sh     /usr/local/bin/
 
 ENV SSHD_OPTS	""
 ENV LOGFILE	""
