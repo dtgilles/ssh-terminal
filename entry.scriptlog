@@ -1,0 +1,92 @@
+# interfaces:
+#  - to activate script_login for a user...:
+#    - you should set command to "/usr/local/bin/script_login -u %u" in key_dir/_keyprefix
+#    - you could allow agent forwarding
+#    - you should neighter allow X11 forwarding nor PortForwarding 
+#    - you should review the script-logs regularly
+#  - variables:
+#    - CheckScriptSeconds:    interval to check / handle script logs
+#    - PossibleScripts:       number of prepared script logs
+#    - LoginScriptLogDir:     location of persistent session protocolls
+#
+PossibleScripts=${PossibleScripts:-10}
+LoginScriptLogDir=${LoginScriptLogDir:-/data/logs}
+umask 077
+
+mkdir -p "$LoginScriptLogDir"
+
+##### transfer the logfiles to destination dir and zip it
+transfer_logfile()
+   {
+      typeset logfile="$1"
+      typeset archive="$LoginScriptLogDir/${logfile##*/}"
+      (
+        touch "$logfile.sync"
+        cp    "$logfile.pid"           "$archive.pid"
+        cat   "$logfile"      | gzip > "$archive.gz"      &
+        cat   "$logfile.time" | gzip > "$archive.time.gz" &
+        wait
+        rm -rf "$logfile" "$logfile.pid" "$logfile.time" "$logfile.sync"
+      ) &
+   }
+
+##### add missing infrastructure (named pipes)
+add_logfile()
+   {
+      typeset count="$1"
+      while [ $count -lt $PossibleScripts ]
+         do
+            logfile=$(mktemp /tmp/s_XXXXXXXXXX_scriptlog)
+               rm    -rf  "$logfile" "$logfile.time" \
+            && mknod -m 0622  "$logfile"      p \
+            && mknod -m 0622  "$logfile.time" p \
+            || rm    -f   "$logfile" "$logfile.time"
+            count=$(($count + 1))
+         done
+      return 0
+   }
+
+##### check all the session logs and initiate transfer_logfile() and add_logfile() if needed
+check_logfile()
+   {
+      typeset count=0
+      for logfile in $(find /tmp/*_scriptlog -user ${owner:-root} -print)
+         do
+            [ -p "$logfile"     ]        || continue    ##### this is unexpected... :-\
+            if [ -f "$logfile.pid" ]
+               then
+                  [ -f "$logfile.sync" ] && continue    ##### this logfile is synced already
+               else
+                  count=$(($count + 1))  && continue
+               fi
+            transfer_logfile "$logfile"
+         done
+      add_logfile "$count"
+      return 0
+   }
+
+##### check if at least one of the users has login shell "script_login"
+grep -q /script_login $UserDir/*/key_build/_keyprefix 2>/dev/null \
+&& script_login_active=on \
+|| script_login_active=off
+
+##### parse command line parameters
+while [ $# -gt 0 ]
+   do
+      case "$1"
+         in
+            -c) shift;;
+            -a) script_login_active=on;;
+            -o) readonly owner="$2";      shift 2;;
+            *)  break;;
+         esac
+   done
+
+##### if anybody uses login shell "script_login" then asure regarding infrastructure
+   [ "$script_login_active" = on ] \
+&& check_logfile \
+&& (  while sleep ${CheckScriptSeconds:-10}
+         do
+            check_logfile
+         done
+   ) &

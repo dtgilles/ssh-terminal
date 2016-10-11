@@ -17,6 +17,16 @@ Running this docker container you may support following use cases:
           - ...
    - set global variable "LoginSleep" to configure session timeout
    - set global variable ```SSHD_OPTS="-o AllowTcpForwarding=yes"``` (other options could be appended)
+ * "terminal server" logging each ssh-session
+   - to activate script_login for a user...:
+     - you should set command to "/usr/local/bin/script_login -u %u" in key_dir/_keyprefix
+     - you could allow agent forwarding
+     - you should neighter allow X11 forwarding nor PortForwarding 
+     - you should review the script-logs regularly
+   - some variables are used for this case only:
+     - CheckScriptSeconds:    interval to check / handle script logs
+     - PossibleScripts:       number of prepared script logs
+     - LoginScriptLogDir:     location of persistent session protocolls
  * special api host
    - create your own api command (e.g. shell or python script)
    - mount /etc/user via external volume and set this api command as login shell
@@ -61,6 +71,9 @@ You can control containers behaviour using following environment variables:
 		waits 60 seconds and starts a config synchronization script,
 		waits 60 seconds and starts a config synchronization script,
 		...
+* CheckScriptSeconds:    (script_login only) interval to check / handle script logs
+* PossibleScripts:       (script_login only) number of prepared script logs
+* LoginScriptLogDir:     (script_login only) location of persistent session protocolls
 
 $UserDir is used to define the users that have to be accessible via ssh and 
 their parameters - each of that in a separate file:

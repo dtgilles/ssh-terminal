@@ -11,9 +11,10 @@ RUN    mkdir /var/run/sshd \
     && sed s/101/0/ /usr/sbin/policy-rc.d \
     && rm -f /etc/ssh/*_key*
 
-COPY sshd_config /etc/ssh/sshd_config
-COPY entry.sh    /entry.sh
-COPY LoginSleep  add_user_keys.sh     /usr/local/bin/
+COPY sshd_config     /etc/ssh/sshd_config
+COPY entry.sh        /entry.sh
+COPY entry.scriptlog /entry.add.10-scriptlog.sh
+COPY LoginSleep  add_user_keys.sh   script_login   /usr/local/bin/
 
 ENV SSHD_OPTS	""
 ENV LOGFILE	""
