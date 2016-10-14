@@ -1,0 +1,19 @@
+#!/bin/bash
+[ "$CI_ENV" = yes ] && set -x
+
+rc=0
+while read command opt1 optX
+   do
+      case "$command"
+         in
+            ssh)   if [ "${#optX}" = 0 ]
+                      then
+                         ssh "$opt1"        ; rc=$?
+                      else
+                         ssh "$opt1" "$optX"; rc=$?
+                      fi
+               ;;
+            *)     echo "ERROR: unknown command '$command' ==> exit with error" >&2; exit 2;;
+         esac
+   done
+exit $rc
