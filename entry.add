@@ -11,7 +11,6 @@
 #
 PossibleScripts=${PossibleScripts:-10}
 LoginScriptLogDir=${LoginScriptLogDir:-/data/logs}
-umask 077
 
 mkdir -p "$LoginScriptLogDir"
 
@@ -85,7 +84,8 @@ while [ $# -gt 0 ]
 ##### if anybody uses login shell "script_login" then asure regarding infrastructure
    [ "$script_login_active" = on ] \
 && check_logfile \
-&& (  while sleep ${CheckScriptSeconds:-10}
+&& (  umask 077
+      while sleep ${CheckScriptSeconds:-10}
          do
             check_logfile
          done
