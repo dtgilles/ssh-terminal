@@ -1,0 +1,6 @@
+rm -rf test/user; mkdir -p test/user/support/key_build; ssh-add -L > test/user/support/key_build/icke.pub; echo /usr/local/bin/script_login > test/user/support/shell; echo 'command="-u %u"' > test/user/support/key_build/_keyprefix
+docker rm -f term; docker run -d --name term -v $PWD/test:/data -e UserDir=/data/user -e HostKeys=/data/sshd -e ScriptShell=/bin/rbash -p 2222:22 dtgilles/ssh-terminal
+#docker cp script_login term:/usr/local/bin/script_login
+#docker cp entry.add term:/entry.add.10-scriptlog.sh
+#docker restart term
+
