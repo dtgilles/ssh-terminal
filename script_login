@@ -1,19 +1,23 @@
 #!/bin/bash
-[ "$CI_ENV" = yes ] && set -x
+##### source /etc/environment if it exists (set session info, SHELL, PATH, ...)
+[ -r /etc/environment ] && . /etc/environment
 # interfaces:
 #  - normal dtgilles/sshgw
 #  - you should set user shell to "/usr/local/bin/script_login"
+#  - $session_info is loged in logfile.pid (be available in central logging)
+#  - if $SHELL is /bin/rbash then script invokes restricted shell
 
 getlogfile()
    {
       for logfile in $(find /tmp/*_scriptlog -user ${owner:-root} -print)
          do
+            [ -p "$logfile.time" ]|| continue
             [ -p "$logfile"     ] || continue
             [ -w "$logfile"     ] || continue
             [ -f "$logfile.pid" ] && continue
-            touch "$logfile.time" || return 1
-            echo $$ $login_user > "$logfile.pid" \
-            && chmod 0600         "$logfile.pid" \
+            echo "$$ $login_user" > "$logfile.pid" \
+            echo "$session_info" >> "$logfile.pid" \
+            && chmod 0600           "$logfile.pid" \
             && return 0
          done
       return 1
@@ -33,11 +37,23 @@ while [ $# -gt 0 ]
 ##### wait until there is a logfile for me
 while ! getlogfile; do printf .; sleep 10;done
 
+
+##### enforce, that "script" uses bash to invoke other commands (prevent endless loops)
+readonly SHELL="${SHELL:-/bin/bash}"
+export   SHELL
+if [ "$SHELL" = /bin/rbash ]
+   then
+      ##### delete environment files that a user can manipulate (especially for rbash)
+      chmod u+w "$HOME" 2>/dev/null
+      rm -f "$HOME/.bash_profile" "$HOME/.bashrc" "$HOME/.profile"
+      export PATH=/lib/rbash
+   fi
+
 if [ "$SSH_ORIGINAL_COMMAND" = "" ]
    then
-      command=bash
+      /usr/bin/script --timing="$logfile.time" -e -q                            "$logfile"
+      exit $?
    else
-      command="bash -c '$SSH_ORIGINAL_COMMAND'"
+      /usr/bin/script --timing="$logfile.time" -e -q -c "$SSH_ORIGINAL_COMMAND" "$logfile"
+      exit $?
    fi
-script --timing="$logfile.time" -e -q -c "$command" "$logfile"
-exit $?
