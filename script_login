@@ -1,11 +1,11 @@
 #!/bin/bash
-##### source /etc/environment if it exists (set session info, SHELL, PATH, ...)
+##### source /etc/environment if it exists (set session info, ScriptShell, PATH, ...)
 [ -r /etc/environment ] && . /etc/environment
 # interfaces:
 #  - normal dtgilles/sshgw
 #  - you should set user shell to "/usr/local/bin/script_login"
 #  - $session_info is loged in logfile.pid (be available in central logging)
-#  - if $SHELL is /bin/rbash then script invokes restricted shell
+#  - if $ScriptShell is /bin/rbash then script invokes restricted shell
 
 getlogfile()
    {
@@ -39,7 +39,7 @@ while ! getlogfile; do printf .; sleep 10;done
 
 
 ##### enforce, that "script" uses bash to invoke other commands (prevent endless loops)
-readonly SHELL="${SHELL:-/bin/bash}"
+readonly SHELL="${ScriptShell:-/bin/bash}"
 export   SHELL
 if [ "$SHELL" = /bin/rbash ]
    then

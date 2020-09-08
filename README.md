@@ -16,7 +16,7 @@ dtgilles/sshgw.
      - CheckScriptSeconds:    interval to check / handle script logs
      - PossibleScripts:       number of prepared script logs
      - LoginScriptLogDir:     location of persistent session protocolls (this should be a persistent mount)
-     - if you set SHELL=/bin/rbash (this forces "script" to invoke commands restricted), you may also change:
+     - if you set ScriptShell=/bin/rbash (this forces "script" to invoke commands restricted), you may also change:
        - DefaultRbashCommands:  change list of default commands available in rbash (not recommended)
        - RbashCommands:         define some additional rbash commands (e.g. more, less, tar, scp, mysql, curl, ...)
    - you SHOULD set following variables (see dtgilles/sshgw), e.g.:

@@ -10,13 +10,13 @@
 #    - LoginScriptLogDir:     location of persistent session protocolls
 #    - DefaultRbashCommands:  change list of default commands available in rbash (not recommended)
 #    - RbashCommands:         define some additional rbash commands (e.g. more, less, tar, scp, mysql, curl, ...)
-#    - SHELL:                 this controls how "script" invokes commands (default=/bin/bash)
+#    - ScriptShell:           this controls how "script" invokes commands (default=/bin/bash)
 #
 PossibleScripts=${PossibleScripts:-10}
 LoginScriptLogDir=${LoginScriptLogDir:-/data/logs}
-DefaultRbashCommands="${DefaultRbashCommands:-cat chmod cp date df du false fgrep grep gunzip gzip hostname kill ln ls mkdir mknod mktemp mv ps rm rmdir sed sleep sync tail touch true uname wget}"
+DefaultRbashCommands="${DefaultRbashCommands:-cat chmod cp date df du false fgrep getent grep groups gunzip gzip hostname kill id ln ls mkdir mknod mktemp mv ps rm rmdir sed sleep sync tail touch true uname wget}"
 
-env | grep -e "SHELL|PATH|proxy" > /etc/environment
+env | grep -E "ScriptShell|PATH|proxy" > /etc/environment
 
 mkdir -p "$LoginScriptLogDir" /lib/rbash
 
