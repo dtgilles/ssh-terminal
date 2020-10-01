@@ -51,9 +51,9 @@ if [ "$SHELL" = /bin/rbash ]
 
 if [ "$SSH_ORIGINAL_COMMAND" = "" ]
    then
-      /usr/bin/script --timing="$logfile.time" -e -q                            "$logfile"
+      /usr/bin/script --timing="$logfile.time" -a -f -e -q                            "$logfile"
       exit $?
    else
-      /usr/bin/script --timing="$logfile.time" -e -q -c "$SSH_ORIGINAL_COMMAND" "$logfile"
+      /usr/bin/script --timing="$logfile.time" -a -f -e -q -c "$SSH_ORIGINAL_COMMAND" "$logfile"
       exit $?
    fi
