@@ -19,6 +19,7 @@ dtgilles/sshgw.
      - if you set ScriptShell=/bin/rbash (this forces "script" to invoke commands restricted), you may also change:
        - DefaultRbashCommands:  change list of default commands available in rbash (not recommended)
        - RbashCommands:         define some additional rbash commands (e.g. more, less, tar, scp, mysql, curl, ...)
+       - ZipLogs:             {yes|no} controls if script logs are compressed on the fly (default=no)
    - you SHOULD set following variables (see dtgilles/sshgw), e.g.:
 
              UserDir=/data/user
