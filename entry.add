@@ -11,12 +11,12 @@
 #    - DefaultRbashCommands:  change list of default commands available in rbash (not recommended)
 #    - RbashCommands:         define some additional rbash commands (e.g. more, less, tar, scp, mysql, curl, ...)
 #    - ScriptShell:           this controls how "script" invokes commands (default=/bin/bash)
-#    - ZipLogs:               this controls if the script logs are zipped ({yes|no}default=no)
+#    - ZipLogs:               this controls if the script logs are zipped ({yes|no} default=no)
 #
 PossibleScripts=${PossibleScripts:-10}
 LoginScriptLogDir=${LoginScriptLogDir:-/data/logs}
 DefaultRbashCommands="${DefaultRbashCommands:-cat chmod cp date df du false fgrep getent grep groups gunzip gzip hostname kill id ln ls mkdir mknod mktemp mv ps rm rmdir sed sleep sync tail touch true uname wget}"
-ZipLogs="${ZipLogs:-yes}"
+ZipLogs="${ZipLogs:-no}"
 
 env | grep -E "ScriptShell|PATH|proxy" > /etc/environment
 
